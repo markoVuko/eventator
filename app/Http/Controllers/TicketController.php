@@ -70,6 +70,16 @@ class TicketController extends Controller
     public function update(Request $request, Ticket $ticket, $id)
     {
         $ticket = Ticket::find($id);
+        if($ticket == null)
+            return response('A ticket with that id does not exist.', 404);
+        if($ticket->status == 0){
+            $ticket->status = 1;
+            $ticket->save();
+            return response('Ticket updated.',201);
+        }
+        else 
+            return response('This ticket is already used.',409);
+
     }
 
     /**
