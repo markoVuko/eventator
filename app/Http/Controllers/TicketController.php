@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ticket;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class TicketController extends Controller
 {
@@ -33,9 +35,13 @@ class TicketController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $r)
     {
-        //
+        $d = Hash::make(Carbon::now()->timestamp);
+        $ticket = new Ticket;
+        $ticket->event_id = $r->get('event_id');
+        $ticket->status = 0;
+        $ticket->id = 'tckt21lrv'.$d;
     }
 
     /**
