@@ -42,6 +42,9 @@ class TicketController extends Controller
         $ticket->event_id = $r->get('event_id');
         $ticket->status = 0;
         $ticket->id = 'tckt21lrv'.$d;
+        $ticket->save();
+
+        return response('Ticket successfully created.', 201);
     }
 
     /**
