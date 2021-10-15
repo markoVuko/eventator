@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ticket;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class TicketController extends Controller
 {
@@ -33,9 +35,16 @@ class TicketController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $r)
     {
-        //
+        $d = Hash::make(Carbon::now()->timestamp);
+        $ticket = new Ticket;
+        $ticket->event_id = $r->get('event_id');
+        $ticket->status = 0;
+        $ticket->id = 'tckt21lrv'.$d;
+        $ticket->save();
+
+        return response('Ticket successfully created.', 201);
     }
 
     /**
@@ -70,6 +79,16 @@ class TicketController extends Controller
     public function update(Request $request, Ticket $ticket, $id)
     {
         $ticket = Ticket::find($id);
+        if($ticket == null)
+            return response('A ticket with that id does not exist.', 404);
+        if($ticket->status == 0){
+            $ticket->status = 1;
+            $ticket->save();
+            return response('Ticket updated.',201);
+        }
+        else 
+            return response('This ticket is already used.',409);
+
     }
 
     /**
