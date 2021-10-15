@@ -14,6 +14,9 @@ class Ticket extends Model
         'status'
     ];
 
+    protected $primaryKey = 'id';
+    public $incrementing = false;
+
     protected $table = 'tickets';
 
     public function event(){

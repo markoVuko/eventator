@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\EventOneResource;
+use App\Http\Resources\EventResource;
 use App\Models\Event;
 use Illuminate\Http\Request;
 
@@ -14,7 +16,8 @@ class EventController extends Controller
      */
     public function index()
     {
-        //
+        
+        return EventResource::collection(Event::all());
     }
 
     /**
@@ -44,9 +47,14 @@ class EventController extends Controller
      * @param  \App\Models\Event  $event
      * @return \Illuminate\Http\Response
      */
-    public function show(Event $event)
+    public function show($id)
     {
-        //
+        $event = Event::with("tickets")->find($id);
+        if(!$event){
+            return response(["message" => "Event not found."],404);
+        }
+        return $event;
+        return response()->json(new EventOneResource($event));
     }
 
     /**
@@ -82,4 +90,6 @@ class EventController extends Controller
     {
         //
     }
+
+    
 }
