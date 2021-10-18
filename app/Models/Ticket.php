@@ -14,17 +14,10 @@ class Ticket extends Model
         'status'
     ];
 
-<<<<<<< HEAD
     protected $pimaryKey = 'id';
 
     public $incrementing = false;
 
-=======
-    protected $primaryKey = 'id';
-    public $incrementing = false;
-
-    protected $table = 'tickets';
->>>>>>> 55acc973016622a36caa83edd35ea17a533e236a
 
     public function event(){
         return $this->hasOne(Event::class);
