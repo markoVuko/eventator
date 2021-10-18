@@ -37,7 +37,7 @@ class TicketController extends Controller
      */
     public function store(Request $r)
     {
-        $d = Hash::make(Carbon::now()->timestamp);
+        $d = str_replace('/','-',Hash::make(Carbon::now()->timestamp));
         $ticket = new Ticket;
         $ticket->event_id = $r->get('event_id');
         $ticket->status = 0;
