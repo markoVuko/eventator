@@ -84,7 +84,7 @@ class TicketController extends Controller
         if($ticket->status == 0){
             $ticket->status = 1;
             $ticket->save();
-            return response('Ticket updated.',201);
+            return response($ticket,201);
         }
         else 
             return response('This ticket is already used.',409);

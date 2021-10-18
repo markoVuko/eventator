@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
         }
 
         for($i=0;$i<50;$i++){
-            $d = Hash::make(Carbon::now()->timestamp);
+            $d = str_replace('/','-',Hash::make(Carbon::now()->timestamp));
             DB::table('tickets')->insert([
                 'id' => 'tckt21lrv'.$d,
                 'event_id' => $this->randomEventId(),

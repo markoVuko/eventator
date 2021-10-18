@@ -14,7 +14,10 @@ class Ticket extends Model
         'status'
     ];
 
-    protected $table = 'tickets';
+    protected $pimaryKey = 'id';
+
+    public $incrementing = false;
+
 
     public function event(){
         return $this->hasOne(Event::class);
