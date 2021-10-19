@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EventRequest;
 use App\Http\Resources\EventOneResource;
 use App\Http\Resources\EventResource;
+use App\Http\Resources\EventResourcePaginated;
 use App\Models\Event;
 use Illuminate\Http\Request;
 
@@ -14,10 +16,41 @@ class EventController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(EventRequest $request)
     {
-        
-        return EventResource::collection(Event::all());
+        $start_date = $request->input("start_date");
+        $end_date = $request->input("end_date");
+        $start_date_formated = date("y-m-d h:m:s",strtotime($start_date));
+        $end_date_formated = date("y-m-d h:m:s",strtotime($end_date));
+
+        $page = $request->input("page",1);
+        $perPage = $request->input("per_page",10);
+        $response = [];
+        $query = Event::query();
+
+        if($start_date && !$end_date){
+
+            $query = $query->where("created_at",">=",$start_date_formated);
+        }
+        if($end_date && !$start_date){
+            $query = $query->where("created_at","<=",$end_date_formated);
+        }
+        if($start_date && $end_date){
+            if(strtotime($start_date) >= strtotime($end_date)){
+                return response(["message" => "Start date can't be higher or equal then end date."],409);
+            }
+            $query = $query->whereBetween("created_at",[$start_date_formated,$end_date_formated]);
+        }
+
+        $skip = $perPage * ($page - 1);
+        $response["totalEvents"] = $query->count();
+        $response["totalPages"] = ceil($response["totalEvents"]/$perPage);
+        $response["curentPage"] = (int)$page;
+        $response["perPage"] = (int)$perPage;
+        $response["events"] = $query->skip($skip)->take($perPage)->get();
+
+
+        return new EventResourcePaginated($response);
     }
 
     /**
@@ -53,7 +86,6 @@ class EventController extends Controller
         if(!$event){
             return response(["message" => "Event not found."],404);
         }
-        return $event;
         return response()->json(new EventOneResource($event));
     }
 

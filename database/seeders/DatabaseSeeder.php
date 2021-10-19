@@ -19,18 +19,20 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // \App\Models\User::factory(10)->create();
-        for($i=0;$i<10;$i++){
+        for($i=0;$i<500;$i++){
             DB::table('events')->insert([
-                'name' => 'Event '.Str::random(10)
+                'name' => 'Event '.Str::random(10),
+                'created_at' => date("y-m-d h:m:s", time())
             ]);
         }
 
-        for($i=0;$i<50;$i++){
+        for($i=0;$i<2000;$i++){
             $d = str_replace('/','-',Hash::make(Carbon::now()->timestamp));
             DB::table('tickets')->insert([
                 'id' => 'tckt21lrv'.$d,
                 'event_id' => $this->randomEventId(),
-                'status' => rand(0,1)
+                'status' => rand(0,1),
+                'created_at' => date("y-m-d h:m:s", time())
             ]);
         }
     }

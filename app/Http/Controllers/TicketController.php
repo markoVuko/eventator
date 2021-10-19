@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Ticket;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use stdClass;
 
 class TicketController extends Controller
 {
@@ -16,7 +18,7 @@ class TicketController extends Controller
      */
     public function index()
     {
-        //
+        
     }
 
     /**
