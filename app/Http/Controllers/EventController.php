@@ -8,6 +8,7 @@ use App\Http\Resources\EventResource;
 use App\Http\Resources\EventResourcePaginated;
 use App\Models\Event;
 use Illuminate\Http\Request;
+use stdClass;
 
 class EventController extends Controller
 {
@@ -20,20 +21,20 @@ class EventController extends Controller
     {
         $start_date = $request->input("start_date");
         $end_date = $request->input("end_date");
-        $start_date_formated = date("y-m-d h:m:s",strtotime($start_date));
-        $end_date_formated = date("y-m-d h:m:s",strtotime($end_date));
-
+        $start_date_formated = date("y-m-d",strtotime($start_date));
+        $end_date_formated = date("y-m-d",strtotime($end_date));
+        
         $page = $request->input("page",1);
         $perPage = $request->input("per_page",10);
-        $response = [];
+        $response = new stdClass();
         $query = Event::query();
 
         if($start_date && !$end_date){
 
-            $query = $query->where("created_at",">=",$start_date_formated);
+            $query = $query->whereDate("created_at",">=",$start_date_formated);
         }
         if($end_date && !$start_date){
-            $query = $query->where("created_at","<=",$end_date_formated);
+            $query = $query->whereDate("created_at","<=",$end_date_formated);
         }
         if($start_date && $end_date){
             if(strtotime($start_date) >= strtotime($end_date)){
@@ -43,11 +44,11 @@ class EventController extends Controller
         }
 
         $skip = $perPage * ($page - 1);
-        $response["totalEvents"] = $query->count();
-        $response["totalPages"] = ceil($response["totalEvents"]/$perPage);
-        $response["curentPage"] = (int)$page;
-        $response["perPage"] = (int)$perPage;
-        $response["events"] = $query->skip($skip)->take($perPage)->get();
+        $response->totalEvents = $query->count();
+        $response->totalPages = ceil($response->totalEvents/$perPage);
+        $response->curentPage = (int)$page;
+        $response->perPage = (int)$perPage;
+        $response->events = $query->skip($skip)->take($perPage)->get();
 
 
         return new EventResourcePaginated($response);

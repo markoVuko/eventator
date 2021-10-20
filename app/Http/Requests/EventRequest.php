@@ -26,6 +26,8 @@ class EventRequest extends FormRequest
         return [
             "start_date" => ["sometimes","exclude_if:end_date,null","date"],
             "end_date" => ["sometimes","exclude_if:start_date,null","date"],
+            "page" => ["nullable","integer","gt:0"],
+            "per_page" => ["nullable","integer","gt:0"]
         ];
     }
 }

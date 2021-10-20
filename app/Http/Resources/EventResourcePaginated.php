@@ -14,13 +14,14 @@ class EventResourcePaginated extends JsonResource
      */
     public function toArray($request)
     {
+      
         return [
             "meta" => [
-                "curentPage" => $this["curentPage"],
-                "totalPages" => $this["totalPages"],
-                "totalEvents" => $this["totalEvents"],
+                "curentPage" => $this->curentPage,
+                "totalPages" => $this->totalPages,
+                "totalEvents" => $this->totalEvents,
             ],
-            "data" => EventResource::collection($this["events"]),
+            "data" => EventResource::collection($this->events),
         ];
     }
 }
