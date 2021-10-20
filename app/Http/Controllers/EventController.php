@@ -30,11 +30,11 @@ class EventController extends Controller
         $perPage = $request->input("per_page",10);
     DB::enableQueryLog();
         $response = new stdClass();
-        $query = Event::with("tickets");
+        $query = Event::query();
         
 
         if(!empty($keyword)){
-            $query = $query->where("name","like","%".$keyword."%");
+            $query = $query->with("tickets")->where("name","like","%".$keyword."%");
         }
         if($start_date && !$end_date){
             $query = $query->whereDate("created_at",">=",$start_date_formated);
@@ -57,7 +57,7 @@ class EventController extends Controller
         $response->curentPage = (int)$page;
         $response->perPage = (int)$perPage;
         $response->events = $query->skip($skip)->take($perPage)->get();
-        
+
         return new EventResourcePaginated($response);
     }
 
