@@ -20,6 +20,7 @@ class EventResourcePaginated extends JsonResource
                 "curentPage" => $this->curentPage,
                 "totalPages" => $this->totalPages,
                 "totalEvents" => $this->totalEvents,
+                "perPage" => $this->perPage,
             ],
             "data" => EventResource::collection($this->events),
         ];
