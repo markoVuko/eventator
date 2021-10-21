@@ -3,12 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\EventRequest;
+use App\Http\Requests\EventRequestAdd;
+use App\Http\Requests\EventRequestSearch;
 use App\Http\Resources\EventOneResource;
 use App\Http\Resources\EventResource;
 use App\Http\Resources\EventResourcePaginated;
 use App\Models\Event;
+use App\Models\Ticket;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use stdClass;
 
 class EventController extends Controller
@@ -18,7 +24,7 @@ class EventController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(EventRequest $request)
+    public function index(EventRequestSearch $request)
     {
         $keyword = $request->input("keyword");
         $start_date = $request->input("start_date");
@@ -28,13 +34,16 @@ class EventController extends Controller
 
         $page = $request->input("page",1);
         $perPage = $request->input("per_page",10);
-    DB::enableQueryLog();
+    
         $response = new stdClass();
-        $query = Event::query();
+        $query = Event::with("category");
         
 
         if(!empty($keyword)){
-            $query = $query->with("tickets")->where("name","like","%".$keyword."%");
+            $query = $query->with("tickets")->where("name","like","%".$keyword."%")
+            ->orWhereHas("category",function($query) use($keyword){
+                $query->where("name","like","%".$keyword."%");
+            });
         }
         if($start_date && !$end_date){
             $query = $query->whereDate("created_at",">=",$start_date_formated);
@@ -68,7 +77,7 @@ class EventController extends Controller
      */
     public function create()
     {
-        //
+        
     }
 
     /**
@@ -77,9 +86,31 @@ class EventController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(EventRequestAdd $request)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $newEvent = Event::create([
+                "name" => $request->name,
+                "category_id" => $request->category_id,
+            ]);
+    
+            for ($i=0 ; $i < $request->num_of_tickets; $i++) { 
+                $d = str_replace('/','-',Hash::make(Carbon::now()->timestamp));
+                Ticket::create([
+                    "id" => 'tckt21lrv'.$d,
+                    "event_id" => $newEvent->id,
+                    "status" => 0,
+                ]);
+            }
+
+            DB::commit();
+            return response(["message" => "Successfully created event with tickets."],200);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response(["message" => "Server error, try again later."],500);
+        }
+        
     }
 
     /**

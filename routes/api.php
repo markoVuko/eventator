@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\TicketController;
 use Illuminate\Http\Request;
@@ -23,5 +24,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::put('/ticket/{id}',[TicketController::class, 'update']);
 Route::get('/events',[EventController::class,'index']);
 Route::get('/event/{id}',[EventController::class,'show']);
+Route::post('/event',[EventController::class,'store']);
 Route::post('/ticket',[TicketController::class, 'store']); 
 Route::get('/tickets',[TicketController::class,"index"]);
+Route::get('/categories',[CategoryController::class,"index"]);

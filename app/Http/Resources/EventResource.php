@@ -20,10 +20,10 @@ class EventResource extends JsonResource
             "id" => $this->id,
             "name" => $this->name,
             "created_at" => date("d-F-Y h:i:s",strtotime($this->created_at)),
+            "category" => $this->whenLoaded("category",new CategoryOneResource($this->category)),
             "tickets" => $this->when($request->keyword,function() {
                 return TicketResource::collection($this->whenLoaded("tickets"));
-            }),
-            "queryLog" => DB::getQueryLog(),
+            })
         ];
     }
 }

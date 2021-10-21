@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Category;
 use App\Models\Event;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -18,15 +19,23 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+
+        for ($i=0; $i < 20; $i++) { 
+            DB::table("categories")->insert([
+                "name" => "Category".$i,
+                "created_at" => date("y-m-d h:m:s",time()),
+            ]);
+        }
         // \App\Models\User::factory(10)->create();
-        for($i=0;$i<500;$i++){
+        for($i=0;$i<300;$i++){
             DB::table('events')->insert([
                 'name' => 'Event '.Str::random(10),
+                "category_id" => $this->randomCategoryId(),
                 'created_at' => date("y-m-d h:m:s", time())
             ]);
         }
 
-        for($i=0;$i<2000;$i++){
+        for($i=0;$i<1000;$i++){
             $d = str_replace('/','-',Hash::make(Carbon::now()->timestamp));
             DB::table('tickets')->insert([
                 'id' => 'tckt21lrv'.$d,
@@ -40,5 +49,10 @@ class DatabaseSeeder extends Seeder
     protected function randomEventId(){
         $event = Event::inRandomOrder()->first();
         return $event->id;
+    }
+
+    protected function randomCategoryId(){
+        $category = Category::inRandomOrder()->first();
+        return $category->id;
     }
 }
