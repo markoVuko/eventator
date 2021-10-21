@@ -17,6 +17,7 @@ class CategoryResource extends JsonResource
         return [
             "id" => $this->id,
             "name" => $this->name,
+            "events_count" => $this->events_count,
             "created_at" => date("d-F-Y h:i:s",strtotime($this->created_at))
         ];
     }
