@@ -35,7 +35,7 @@ class EventController extends Controller
 
         $page = $request->input("page",1);
         $perPage = $request->input("per_page",10);
-    DB::enableQueryLog();
+    
         $response = new stdClass();
         $query = Event::with("category");
         
