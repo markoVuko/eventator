@@ -41,10 +41,16 @@ class EventController extends Controller
         
 
         if(!empty($keyword)){
-            $query = $query->with("tickets")->where("name","like","%".$keyword."%")
-            ->orWhereHas("category",function($query) use($keyword){
-                $query->where("name","like","%".$keyword."%");
+            $query = $query->with("tickets")->where(function($query) use($keyword){
+                $query->where("name","like","%".$keyword."%")
+                ->orWhereHas("category",function($query) use($keyword){
+                    $query->where("name","like","%".$keyword."%");
+                });
             });
+            // $query = $query->with("tickets")->where("name","like","%".$keyword."%")
+            // ->orWhereHas("category",function($query) use($keyword){
+            //     $query->where("name","like","%".$keyword."%");
+            // });
         }
         if($start_date && !$end_date){
             $query = $query->whereDate("created_at",">=",$start_date_formated);

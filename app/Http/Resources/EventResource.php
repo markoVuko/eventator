@@ -23,7 +23,8 @@ class EventResource extends JsonResource
             "category" => $this->whenLoaded("category",new CategoryOneResource($this->category)),
             "tickets" => $this->when($request->keyword,function() {
                 return TicketResource::collection($this->whenLoaded("tickets"));
-            })
+            }),
+            "queryLog" => DB::getQueryLog()
         ];
     }
 }
