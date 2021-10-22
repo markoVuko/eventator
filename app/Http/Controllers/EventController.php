@@ -26,6 +26,7 @@ class EventController extends Controller
      */
     public function index(EventRequestSearch $request)
     {
+
         $keyword = $request->input("keyword");
         $start_date = $request->input("start_date");
         $end_date = $request->input("end_date");
@@ -88,6 +89,7 @@ class EventController extends Controller
      */
     public function store(EventRequestAdd $request)
     {
+      
         DB::beginTransaction();
         try {
             $newEvent = Event::create([

@@ -28,3 +28,5 @@ Route::post('/event',[EventController::class,'store']);
 Route::post('/ticket',[TicketController::class, 'store']); 
 Route::get('/tickets',[TicketController::class,"index"]);
 Route::get('/categories',[CategoryController::class,"index"]);
+
+Route::get("/tickets/{ticket}",[TicketController::class,"show"]);
